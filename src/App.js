@@ -1,32 +1,41 @@
 import React from 'react';
-import logo from './logo.svg';
+
 import './App.css';
 import Customerlist from './components/Customerlist';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import MaterialTable from 'material-table';
-import Icons from '@material-ui/icons';
-import {render} from 'react-dom';
 
+import Addtraining from './components/Addtraining';
 import Trainingslist from './components/Trainingslist';
-import {Router, Route, BrowserRouter, IndexRouter} from 'react-router-dom';
+import {BrowserRouter, Route, Switch, Link} from 'react-router-dom';
+import { useHistory } from "react-router-dom";
+import Calendar from './components/Calendar';
+
+
+
 function App() {
   return (
     <div className="App">
       <AppBar position="static">
         <Toolbar>          
           <Typography variant="h6">
-            Personal Trainer programm
+            PersonalTrainer
           </Typography>
         </Toolbar>
       </AppBar>
-      <BrowserRouter>
-      <div>
-        <Route exact path="/" component={Customerlist} />
-        <Route path="/trainings" component={Trainingslist} />
-        </div>
-      </BrowserRouter>
+      <BrowserRouter >
+         <div>
+         <Link to=  "/"  >Home</Link>{' '}
+         <Link to=  "/trainings">About</Link>{' '}
+         <Link to=  "/trainings">Contact</Link>{' '}
+                <Switch>
+                    <Route exact path="/" component={Customerlist} />
+                    <Route path="/trainings" component={Trainingslist} />
+                    <Route path="/calendar" component={Calendar} />
+                </Switch>
+          </div>
+            </BrowserRouter>
     </div>
   );
 }

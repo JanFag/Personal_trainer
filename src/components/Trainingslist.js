@@ -23,8 +23,9 @@ import FaceIcon from '@material-ui/icons/Face';
 import IconButton from '@material-ui/core/IconButton';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
-import Moment from 'moment';
+import moment from 'moment';
 import 'moment-timezone';
+import { useHistory } from "react-router-dom";
 
 
 const drawerWidth = 240;
@@ -103,18 +104,22 @@ export default function Traininglist(){ {
     
   
     const [trainings, setTrainings] = useState([]);
-    
+   
+
     useEffect(() => fetchData(), []);
     
     const fetchData = () => {
-        fetch('https://customerrest.herokuapp.com/api/trainings')
+        fetch('https://customerrest.herokuapp.com/gettrainings')
         .then(response => response.json())
-        .then(data => setTrainings(data.content))
+        .then(data => setTrainings(data))
+        
     };
 
-    const deleteTraining = (link) => {
-        if(window.confirm('Are you sure?')){
-            fetch(link, {method: 'DELETE'})
+
+
+    const deleteTraining = (id) => {
+        if(window.confirm('Do you want to delete this training?')){
+            fetch('https://customerrest.herokuapp.com/api/trainings/'+id, {method: 'DELETE'})
             .then(res => fetchData())
             .catch(err => console.error(err))
             handleClick();
@@ -146,30 +151,59 @@ export default function Traininglist(){ {
         {
             Header: 'Date',
             accessor: 'data',
-            Cell: row => {
-                
+            Cell: row => { 
                 return moment(row.value).format('DD.MM.YYYY, h:mm:ss a');
-                
-                
+            
             }
         },
         {
             Header: 'Duration (min)',
             accessor: 'duration'
         },
-        {
+        { 
             Header: 'Customer',
-            accessor: 'customer'
+            accessor: 'customer',
+            Cell: row => {
+              return (
+                <div>
+                  <span >{row.row.customer.firstname}</span>
+                  <span> </span>
+                  <span >{row.row.customer.lastname}</span>
+                </div>
+              )},
+             
+            
         },
         {
             sortable: false,
             filterable: false,
             width: 100,
-            accessor: 'links[0].href',
-            Cell: row => <Button size="small" color="secondary" onClick={()=> deleteTraining(row.value)} >Delete</Button>
+            accessor: 'id',
+            Cell: row => <Button size="small" color="secondary" onClick={()=> deleteTraining(row.row.id)} >Delete</Button>
             
         }
     ]
+    const history = useHistory();
+ 
+    const location = {
+      pathname: '/trainings',
+      state: { fromDashboard: true }
+    }; 
+     const location2 = {
+      pathname: '/',
+      state: { fromDashboard: true }
+     }
+  
+     function showCustomers () {
+       history.push(location2);
+     }
+  
+    
+  
+    function showTrainings () {
+      
+      history.push(location);
+    };
 
     return (
     <div >
@@ -191,7 +225,7 @@ export default function Traininglist(){ {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Persistent drawer
+            Trainings
           </Typography>
         </Toolbar>
       </AppBar>
@@ -211,16 +245,31 @@ export default function Traininglist(){ {
         </div>
         <Divider />
         <List>
-          {['Customers', 'Trainings', 'Calendar'].map((text, index) => (
-            <ListItem button key={text}>
+        
+            <ListItem button                 
+                onClick={showCustomers}   
+                 >
               <ListItemIcon>
-                {index === 0 && <FaceIcon  />}
-                {index === 1 &&  <DirectionsRunIcon as={Link} to="/trainings"/>}
-                {index === 2 &&  <CalendarTodayIcon />}
+                <FaceIcon  />            
           </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={"Customers"} />              
             </ListItem>
-          ))}
+            <ListItem button                 
+                onClick={showTrainings}   
+                 >
+              <ListItemIcon>
+                <DirectionsRunIcon  />            
+          </ListItemIcon>
+              <ListItemText primary={"Trainings"} />              
+            </ListItem>
+            <ListItem button                 
+                onClick={showTrainings}   
+                 >
+              <ListItemIcon>
+                <CalendarTodayIcon />            
+          </ListItemIcon>
+              <ListItemText primary={"Calender"} />              
+            </ListItem>
         </List>
         <Divider />
       </Drawer>

@@ -40,7 +40,9 @@ import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
 import FaceIcon from '@material-ui/icons/Face';
 import Traininglist from './Trainingslist';
-import { BrowserRouter } from 'react-router';
+import { useHistory } from "react-router-dom";
+import Addtraining from './Addtraining';
+
 
 
 const drawerWidth = 240;
@@ -102,7 +104,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Customerlist(){ 
+export default function Customerlist(props){ 
   const classes = useStyles();
   const theme = useTheme();
   const [openDrawer, setOpendrawer] = React.useState(false);
@@ -137,12 +139,14 @@ const tableIcons = {
 
 
 
-
 const [customers, setCustomers] = useState([]);
 
 const columns = [
-  {title: 'add', Cell: ({ row }) => (<Link >ADD TRAINING</Link>) },
-  
+  { sortable: false,
+    filterable: false,
+    render: row => {
+      return (<Addtraining linkki={row.links[1].href} customername={row.firstname + " " + row.lastname} saveTraining={saveTraining} />);
+    }},
   { title: 'Firstame', field: 'firstname'},
   { title: 'Lastname', field: 'lastname'},
   { title: 'Streetaddress', field: 'streetaddress'},
@@ -242,7 +246,47 @@ const updateCustomer = (customer, link) => {
     browserHistory.push("/trainings");
   };*/
 
+  const history = useHistory();
+ 
+  const location = {
+    pathname: '/trainings',
+    state: { fromDashboard: true }
+  }; 
+   const location2 = {
+    pathname: '/',
+    state: { fromDashboard: true }
+   }
+   const location3 = {
+    pathname: '/calendar',
+    state: { fromDashboard: true }
+   }
 
+   function showCustomers () {
+     history.push(location2);
+   }
+
+  function showCalendar () {
+    history.push(location3);
+  }
+
+  function showTrainings () {
+    
+    history.push(location);
+  };
+
+  const saveTraining = (training) => {
+    fetch('https://customerrest.herokuapp.com/api/trainings', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(training)
+    })
+    .then(res => fetchData())
+    .catch(err => console.error(err))
+};
+
+  
     return (
     <div>
     
@@ -264,7 +308,7 @@ const updateCustomer = (customer, link) => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Persistent drawer
+            Personal Trainer
           </Typography>
         </Toolbar>
       </AppBar>
@@ -284,16 +328,31 @@ const updateCustomer = (customer, link) => {
         </div>
         <Divider />
         <List>
-          {['Customers', 'Trainings', 'Calendar'].map((text, index) => (
-            <ListItem button key={text}>
+        
+            <ListItem button                 
+                onClick={showCustomers}   
+                 >
               <ListItemIcon>
-                {index === 0 && <FaceIcon  />}
-                {index === 1 &&  <DirectionsRunIcon as={Link} to="/trainings"/>}
-                {index === 2 &&  <CalendarTodayIcon />}
+                <FaceIcon  />            
           </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={"Customers"} />              
             </ListItem>
-          ))}
+            <ListItem button                 
+                onClick={showTrainings}   
+                 >
+              <ListItemIcon>
+                <DirectionsRunIcon  />            
+          </ListItemIcon>
+              <ListItemText primary={"Trainings"} />              
+            </ListItem>
+            <ListItem button                 
+                onClick={showCalendar}   
+                 >
+              <ListItemIcon>
+                <CalendarTodayIcon />            
+          </ListItemIcon>
+              <ListItemText primary={"Calender"} />              
+            </ListItem>
         </List>
       <Divider />
       </Drawer>
@@ -343,7 +402,8 @@ const updateCustomer = (customer, link) => {
               resolve();             
                 deleteCustomer(oldData.links[0].href);
             }, 600);
-          }),
+          })
+          
           
           
       }}
@@ -361,7 +421,7 @@ const updateCustomer = (customer, link) => {
                 horizontal: 'left',
                 }}
                 open={openEdit}
-                autoHideDuration={5000}
+                autoHideDuration={4000}
                 onClose={handleCloseEdit}
                 message="The customer was updated"
                 action={
@@ -381,7 +441,7 @@ const updateCustomer = (customer, link) => {
                 horizontal: 'left',
                 }}
                 open={open}
-                autoHideDuration={5000}
+                autoHideDuration={4000}
                 onClose={handleClose}
                 message="The customer was deleted"
                 action={
@@ -401,7 +461,7 @@ const updateCustomer = (customer, link) => {
                 horizontal: 'left',
                 }}
                 open={openAdd}
-                autoHideDuration={5000}
+                autoHideDuration={4000}
                 onClose={handleCloseAdd}
                 message="The customer was added"
                 action={
