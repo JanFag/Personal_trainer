@@ -35,21 +35,26 @@ const useStyles = makeStyles(theme => ({
       display: 'flex',
     },
     appBar: {
+      background: '#26a69a',
       transition: theme.transitions.create(['margin', 'width'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
     },
     appBarShift: {
+      background: '#26a69a',
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
+      
       transition: theme.transitions.create(['margin', 'width'], {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
+
       }),
     },
     menuButton: {
       marginRight: theme.spacing(2),
+      background: '#ff5722'
     },
     hide: {
       display: 'none',
@@ -57,9 +62,12 @@ const useStyles = makeStyles(theme => ({
     drawer: {
       width: drawerWidth,
       flexShrink: 0,
+      
     },
     drawerPaper: {
       width: drawerWidth,
+      background: '#fbe9e7'
+      
     },
     drawerHeader: {
       display: 'flex',
@@ -68,6 +76,7 @@ const useStyles = makeStyles(theme => ({
       // necessary for content to be below app bar
       ...theme.mixins.toolbar,
       justifyContent: 'flex-end',
+      background: '#ff5722'
     },
     content: {
       flexGrow: 1,
@@ -75,15 +84,19 @@ const useStyles = makeStyles(theme => ({
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
+        
       }),
       marginLeft: -drawerWidth,
+      background: '#ff5722'
     },
     contentShift: {
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
+        
       }),
       marginLeft: 0,
+      
     },
   }));
 
@@ -215,6 +228,8 @@ export default function Traininglist(){ {
       history.push(location3);
     }
 
+    
+
     return (
     <div >
       <CssBaseline />
@@ -234,7 +249,7 @@ export default function Traininglist(){ {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
+          <Typography  variant="h6" noWrap>
             Trainings
           </Typography>
         </Toolbar>
@@ -247,6 +262,7 @@ export default function Traininglist(){ {
         classes={{
           paper: classes.drawerPaper,
         }}
+        
       >
         <div className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerClose}>

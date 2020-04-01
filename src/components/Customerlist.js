@@ -52,6 +52,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
   },
   appBar: {
+    background: '#009688',
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -67,6 +68,7 @@ const useStyles = makeStyles(theme => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
+    background: '#ff5722'
   },
   hide: {
     display: 'none',
@@ -77,6 +79,7 @@ const useStyles = makeStyles(theme => ({
   },
   drawerPaper: {
     width: drawerWidth,
+    background: '#fbe9e7'
   },
   drawerHeader: {
     display: 'flex',
@@ -85,6 +88,7 @@ const useStyles = makeStyles(theme => ({
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
     justifyContent: 'flex-end',
+    background: '#ff5722'
   },
   content: {
     flexGrow: 1,
@@ -94,6 +98,7 @@ const useStyles = makeStyles(theme => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: -drawerWidth,
+    background: '#ff5722'
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
@@ -143,8 +148,10 @@ const [customers, setCustomers] = useState([]);
 localStorage.setItem('debug', customers);
 
 const columns = [
+  
   { sortable: false,
     filterable: false,
+    editable: 'never',
     render: row => {
       return (<Addtraining linkki={row.links[1].href} customername={row.firstname + " " + row.lastname} saveTraining={saveTraining} />);
     }},
@@ -159,7 +166,19 @@ const columns = [
    
 ]
 
-
+const columns2 = [
+  
+  
+  { title: 'Firstame', field: 'firstname'},
+  { title: 'Lastname', field: 'lastname'},
+  { title: 'Streetaddress', field: 'streetaddress'},
+  { title: 'Postcode', field: 'postcode', type: 'numeric'},
+  { title: 'City', field: 'city'},
+  { title: 'Email', field: 'email'},
+  { title: 'Phone', field: 'phone'},
+  
+   
+]
 useEffect(() => fetchData(), []);
 
 const fetchData = () => {
@@ -370,27 +389,16 @@ const updateCustomer = (customer, link) => {
     
               
     <MaterialTable
-
-
       icons={tableIcons}
       title="Customers"
       columns={columns}
-     
       data={customers}
-
-     
-
       editable={{
-        onRowAdd: newData =>
-          new Promise(resolve => {
-            setTimeout(() => {
-              resolve();
-                saveCustomer(newData);              
-            }, 600);
-          }),
+       
           onRowUpdate: (newData, oldData) =>
           new Promise(resolve => {
             setTimeout(() => {
+              
               resolve();
               if (oldData) {
                   updateCustomer(newData, oldData.links[0].href);

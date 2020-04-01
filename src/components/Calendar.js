@@ -1,9 +1,8 @@
-import React, { useCallback } from "react";
-import { render } from "react-dom";
-import { Calendar, momentLocalizer, Views } from "react-big-calendar";
+import React from "react";
+
+import { Calendar, momentLocalizer, Views, Next } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import ReactTable from 'react-table';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -22,7 +21,6 @@ import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
 import FaceIcon from '@material-ui/icons/Face';
 import IconButton from '@material-ui/core/IconButton';
-import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import { useHistory } from "react-router-dom";
 
@@ -34,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
   },
   appBar: {
+    background: '#009688',
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -49,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
+    background: '#ff5722'
   },
   hide: {
     display: 'none',
@@ -59,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     width: drawerWidth,
+    background: '#fbe9e7'
   },
   drawerHeader: {
     display: 'flex',
@@ -67,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
     justifyContent: 'flex-end',
+    background: '#ff5722'
   },
   content: {
     flexGrow: 1,
@@ -76,6 +78,7 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: -drawerWidth,
+    background: '#ff5722'
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
@@ -124,7 +127,7 @@ export default function Calendarpage(){
 
   moment.locale("fi-FI");
   const localizer = momentLocalizer(moment);
-  const allViews = Object.keys(Views).map(k => Views[k]);
+  
   const [uusidata, setUusidata] =React.useState([]);
 
     
@@ -151,7 +154,7 @@ export default function Calendarpage(){
             console.log(items);
             item.push({
               title: events[k].activity + "/" + events[k].customer.firstname + " " + events[k].customer.lastname,
-              allDay: false,
+              
               start: getAlku(events[k].date), 
               end: getnewDate(events[k].date, events[k].duration)
               
@@ -223,7 +226,7 @@ export default function Calendarpage(){
   localStorage.setItem('items.lenghtuusi', item.length);
   localStorage.setItem('items.lenght', items.size)
     
-
+  
   
   return (
   <div style={{ height: 700 }}>
@@ -303,14 +306,16 @@ export default function Calendarpage(){
     <Calendar
       localizer={localizer}
       events={items}
-      step={5}
-      timeslots={3}
+      step={15}
+      timeslots={8}
       showMultiDayTimes
     
       min={new Date(2008, 0, 1, 8, 0)} // 8.00 AM
       max={new Date(2022, 0, 1, 17, 0)} // Max will be 6.00 PM!
-      date={new Date()}
-      views={allViews}
+      
+      defaultView={Views.MONTH}
+      
+      
       
     />
   </div>
