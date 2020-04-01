@@ -140,6 +140,7 @@ const tableIcons = {
 
 
 const [customers, setCustomers] = useState([]);
+localStorage.setItem('debug', customers);
 
 const columns = [
   { sortable: false,

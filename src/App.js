@@ -26,9 +26,6 @@ function App() {
       </AppBar>
       <BrowserRouter >
          <div>
-         <Link to=  "/"  >Home</Link>{' '}
-         <Link to=  "/trainings">About</Link>{' '}
-         <Link to=  "/trainings">Contact</Link>{' '}
                 <Switch>
                     <Route exact path="/" component={Customerlist} />
                     <Route path="/trainings" component={Trainingslist} />

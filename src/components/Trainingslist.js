@@ -205,6 +205,16 @@ export default function Traininglist(){ {
       history.push(location);
     };
 
+    const location3 = {
+      pathname: '/calendar',
+      state: { fromDashboard: true }
+     }
+  
+  
+    function showCalendar () {
+      history.push(location3);
+    }
+
     return (
     <div >
       <CssBaseline />
@@ -263,7 +273,7 @@ export default function Traininglist(){ {
               <ListItemText primary={"Trainings"} />              
             </ListItem>
             <ListItem button                 
-                onClick={showTrainings}   
+                onClick={showCalendar}   
                  >
               <ListItemIcon>
                 <CalendarTodayIcon />            
