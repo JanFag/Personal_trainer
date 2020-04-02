@@ -164,8 +164,8 @@ export default function Customerlist(props){
     
   ]
 
-
-  useEffect(() => fetchData());
+  // eslint-disable-next-line
+  useEffect(() => fetchData(), []);
 
   const fetchData = () => {
       fetch('https://customerrest.herokuapp.com/api/customers')

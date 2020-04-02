@@ -13,11 +13,13 @@ import moment from "moment";
 export default function Addtraining(props) {
   const [open, setOpen] = React.useState(false);
   const [training, setTraining] = React.useState({
-        date: '', duration: '', activity: '',  customer: ''
+        date: '', duration: '', activity: '',  customer: props.linkki
       });
-    
 
+
+        
   const [open1, setOpen1] = React.useState(false);
+
   
   moment.locale("fi-FI");
   
@@ -36,7 +38,7 @@ export default function Addtraining(props) {
     }
 
     setOpen1(false);
-};
+    };
 
   const handleInputCnange = (event) => {
     setTraining({...training, [event.target.name]: event.target.value})
@@ -44,18 +46,14 @@ export default function Addtraining(props) {
 
   const handleClick1 = () => {
     setOpen1(true);
-};
+    };
   const addTraining = () => {
+   
       props.saveTraining(training);
       handleClose();
       handleClick1();
   };
 
- const setTrainingCustomer = (value) => {
-     setTraining({date: '', duration: '', activity: '',  customer: value})
- }
- React.useEffect(() => setTrainingCustomer(props.linkki));
- 
 
     return (
         <div>

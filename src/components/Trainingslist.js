@@ -112,8 +112,8 @@ export default function Traininglist(){
     const [trainings, setTrainings] = useState([]);
     let trainings1 = [];
    
-
-    useEffect(() => fetchData());
+    // eslint-disable-next-line
+    useEffect(() => fetchData(), []);
     
     
     const fetchData = () => {
