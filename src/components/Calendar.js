@@ -98,7 +98,7 @@ export default function Calendarpage(){
     setOpendrawer(true);
   };
   
-
+  
   const handleDrawerClose = () => {
     setOpendrawer(false);
   };
@@ -139,27 +139,34 @@ export default function Calendarpage(){
         
         
           for(let k = 0; k<events.length; k++){
+            
             item.push({
               title: events[k].activity + "/" + events[k].customer.firstname + " " + events[k].customer.lastname,
-              start: moment.utc(events[k].date), 
+              start: getStart(events[k].date), 
               end: getnewDate(events[k].date, events[k].duration)              
             })
           }
+          console.log(item);
           setItems(item);
       },
       (error) => ({
         
       })))
       
-      
       });
 
-
-
-
+  function getStart (date) {
+    const aika = moment.utc(date);
+    const paiva = moment.utc(aika).date();
+    const kk = moment(aika).month();
+    const year = moment(aika).year();
+    let hour = moment(aika).hours();
+    let min = moment(aika).minutes();
+    const newdate = new Date(year, kk, paiva, hour, min);
+    return newdate;
+  }
 
   function getnewDate (date, duration) {
-    
   const aika = moment.utc(date);
   const paiva = moment.utc(aika).date();
   const kk = moment(aika).month();
@@ -188,7 +195,7 @@ export default function Calendarpage(){
   return enddate;
 
   }
-
+  
   
   return (
   <div style={{ height: 700 }}>
@@ -256,7 +263,7 @@ export default function Calendarpage(){
         <Divider />
       </Drawer>
       <main
-        className={clsx(classes.content)}
+        className={clsx(classes.content )}
       >
       </main>
     
