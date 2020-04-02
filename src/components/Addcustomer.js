@@ -7,17 +7,25 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
-import Traininglist from './Trainingslist';
+import {green, purple} from '@material-ui/core/colors';
+import { withStyles, makeStyles} from '@material-ui/core/styles';
 
-export default function Addtraining(props) {
+
+const useStyles = makeStyles((theme) => ({
+    margin: {
+      margin: theme.spacing(1),
+    },
+  }));
+
+
+export default function Addcustomer(props) {
   const [open, setOpen] = React.useState(false);
-  const [training, setTraining] = React.useState({
-        date: '', duration: '', activity: '',  customer: ''
+  const [customer, setCustomer] = React.useState({
+        firstname: '', lastname: '', streetaddress: '',  postcode: '', city: '', email: '', phone: ''
       });
     
-
+    const classes = useStyles();
   const [open1, setOpen1] = React.useState(false);
-  
   
   
   const handleClose = () => {
@@ -38,92 +46,108 @@ export default function Addtraining(props) {
 };
 
   const handleInputCnange = (event) => {
-    setTraining({...training, [event.target.name]: event.target.value})
+    setCustomer({...customer, [event.target.name]: event.target.value})
   };
 
   const handleClick1 = () => {
     setOpen1(true);
 };
-  const addTraining = () => {
-      props.saveTraining(training);
+  const addCustomer = () => {
+      props.saveCustomer(customer);
       handleClose();
       handleClick1();
   };
-
- const getId = (value) => {
-    const customerID = value;
-   
- };
-
- const setTrainingCustomer = (value) => {
-     setTraining({date: '', duration: '', activity: '',  customer: value})
- }
- React.useEffect(() => setTrainingCustomer(props.linkki), []);
- 
-
+  const ColorButton = withStyles((theme) => ({
+    root: {
+      color: theme.palette.getContrastText(purple[500]),
+      backgroundColor: green[500],
+      '&:hover': {
+        backgroundColor: green[700],
+      },
+    },
+  }))(Button);
 
     return (
         <div>
-            
-        <Button style={{margin: 10}} variant="outlined" color="primary" onClick={handleClickOpen}>
-            Add training
-        </Button>
+         <ColorButton variant="contained" color="primary" className= {classes.margin} onClick={handleClickOpen}>
+            New customer
+        </ColorButton>
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">New Training</DialogTitle>
+            <DialogTitle id="form-dialog-title">New Customer</DialogTitle>
             <DialogContent> 
                      <TextField
                         autoFocus
                         margin="dense"
-                        name="activity"
-                        value={training.activity}
+                        name="firstname"
+                        value={customer.firstname}
                         onChange={e => handleInputCnange(e)}
-                        label="Activity"                        
+                        label="Firstname"                        
                         fullWidth
                     />       
                     <TextField
                         
                         margin="dense"
-                        name="date"
-                        type="datetime-local"
-                        value={training.date}
+                        name="lastname"
+                        value={customer.lastname}
                         onChange={e => handleInputCnange(e)}
-                        label="Date"                        
+                        label="Lastname"                        
                         fullWidth
-                        InputLabelProps={{
-                            shrink: true,
-                          }}
+                        
                     />
                      
                      <TextField
                         
                         margin="dense"
-                        name="duration"
-                        type="numeric"
-                        value={training.duration}
+                        name="streetaddress"
+                        value={customer.streetaddress}
                         onChange={e => handleInputCnange(e)}
-                        label="Duration in minutes"                        
+                        label="Streetaddress"                        
                         fullWidth
-                    />
+                    />       
                      <TextField
                         
                         margin="dense"
-                        name="customername"                        
-                        defaultValue={props.customername}                                 
-                        label="Customer"                        
+                        name="postcode"
+                        value={customer.postcode}
+                        onChange={e => handleInputCnange(e)}
+                        label="Postcode"                        
                         fullWidth
-                        InputProps={{
-                            readOnly: true,
+                    />       
+
+                    <TextField
                         
-                          }}
-                    />
-                    
+                        margin="dense"
+                        name="city"
+                        value={customer.city}
+                        onChange={e => handleInputCnange(e)}
+                        label="City"                        
+                        fullWidth
+                    />       
+                    <TextField
+                        
+                        margin="dense"
+                        name="email"
+                        value={customer.email}
+                        onChange={e => handleInputCnange(e)}
+                        label="Email"                        
+                        fullWidth
+                    />       
+                    <TextField
+                        
+                        margin="dense"
+                        name="phone"
+                        value={customer.phone}
+                        onChange={e => handleInputCnange(e)}
+                        label="Phone"                        
+                        fullWidth
+                    />       
                      
                 </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} color="primary">
+                <Button onClick={handleClose} color="secondary">
                     Cancel
                 </Button>
-                <Button onClick={addTraining} color="primary">
+                <Button onClick={addCustomer} color="primary">
                     Save
                 </Button>
             </DialogActions>
@@ -136,7 +160,7 @@ export default function Addtraining(props) {
                 open={open1}
                 autoHideDuration={6000}
                 onClose={handleClose1}
-                message="The training was added"
+                message="The customer was added"
                 action={
                     <React.Fragment>
                     <Button color="secondary" size="small" onClick={handleClose1}>

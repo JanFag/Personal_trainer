@@ -7,7 +7,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
-import Traininglist from './Trainingslist';
+
+import moment from "moment";
 
 export default function Addtraining(props) {
   const [open, setOpen] = React.useState(false);
@@ -18,7 +19,7 @@ export default function Addtraining(props) {
 
   const [open1, setOpen1] = React.useState(false);
   
-  
+  moment.locale("fi-FI");
   
   const handleClose = () => {
       
@@ -50,17 +51,11 @@ export default function Addtraining(props) {
       handleClick1();
   };
 
- const getId = (value) => {
-    const customerID = value;
-   
- };
-
  const setTrainingCustomer = (value) => {
      setTraining({date: '', duration: '', activity: '',  customer: value})
  }
- React.useEffect(() => setTrainingCustomer(props.linkki), []);
+ React.useEffect(() => setTrainingCustomer(props.linkki));
  
-
 
     return (
         <div>
@@ -98,12 +93,13 @@ export default function Addtraining(props) {
                         
                         margin="dense"
                         name="duration"
-                        type="numeric"
+                        type="numeric"                        
                         value={training.duration}
                         onChange={e => handleInputCnange(e)}
                         label="Duration in minutes"                        
                         fullWidth
                     />
+                   
                      <TextField
                         
                         margin="dense"
@@ -134,7 +130,7 @@ export default function Addtraining(props) {
                 horizontal: 'left',
                 }}
                 open={open1}
-                autoHideDuration={6000}
+                autoHideDuration={4000}
                 onClose={handleClose1}
                 message="The training was added"
                 action={

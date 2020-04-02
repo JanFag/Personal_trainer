@@ -1,15 +1,12 @@
 import React from 'react';
-
 import './App.css';
 import Customerlist from './components/Customerlist';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Addtraining from './components/Addtraining';
+import { makeStyles} from '@material-ui/core/styles';
 import Trainingslist from './components/Trainingslist';
-import {BrowserRouter, Route, Switch, Link} from 'react-router-dom';
-import { useHistory } from "react-router-dom";
+import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import Calendar from './components/Calendar';
 import clsx from 'clsx';
 
@@ -25,10 +22,6 @@ const useStyles = makeStyles(theme => ({
 
 function App() {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
-  const handleClick = () => {
-      setOpen(true);
-  };
 
   return (
     <div className="App">

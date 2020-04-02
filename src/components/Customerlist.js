@@ -5,7 +5,6 @@ import IconButton from '@material-ui/core/IconButton';
 import MaterialTable from 'material-table';
 import CloseIcon from "@material-ui/icons/Close";
 import { forwardRef } from 'react';
-import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
@@ -39,9 +38,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
 import FaceIcon from '@material-ui/icons/Face';
-import Traininglist from './Trainingslist';
 import { useHistory } from "react-router-dom";
 import Addtraining from './Addtraining';
+import Addcustomer from './Addcustomer';
 
 
 
@@ -83,7 +82,7 @@ const useStyles = makeStyles(theme => ({
   },
   drawerHeader: {
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'left',
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
@@ -92,13 +91,14 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
+    padding: theme.spacing(0),
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    marginLeft: -drawerWidth,
+    marginLeft: 0,
     background: '#ff5722'
+    
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
@@ -122,200 +122,182 @@ export default function Customerlist(props){
     setOpendrawer(false);
   };
 
-const tableIcons = {
-  Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
-  Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
-  Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
-  DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-  Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
-  Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
-  Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
-  FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
-  LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
-  NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-  PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
-  ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
-  SortArrow: forwardRef((props, ref) => <ArrowUpward {...props} ref={ref} />),
-  ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+  const tableIcons = {
+    Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+    Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
+    Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+    Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+    DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+    Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
+    Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+    Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
+    FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+    LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
+    NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+    PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
+    ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+    Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
+    SortArrow: forwardRef((props, ref) => <ArrowUpward {...props} ref={ref} />),
+    ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
+    ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+    };
+
+
+
+  const [customers, setCustomers] = useState([]);
+  
+
+  const columns = [
+    
+    { sortable: false,
+      filterable: false,
+      render: row => {
+        return (<Addtraining linkki={row.links[1].href} customername={row.firstname + " " + row.lastname} saveTraining={saveTraining} />);
+      }},
+    { title: 'Firstame', field: 'firstname'},
+    { title: 'Lastname', field: 'lastname'},
+    { title: 'Streetaddress', field: 'streetaddress'},
+    { title: 'Postcode', field: 'postcode', type: 'numeric'},
+    { title: 'City', field: 'city'},
+    { title: 'Email', field: 'email'},
+    { title: 'Phone', field: 'phone'}  
+    
+  ]
+
+
+  useEffect(() => fetchData());
+
+  const fetchData = () => {
+      fetch('https://customerrest.herokuapp.com/api/customers')
+      .then(response => response.json())
+      .then(data => setCustomers(data.content))
   };
 
+  const [open, setOpen] = useState(false);
+  const handleClick = () => {
+      setOpen(true);
+  };
 
+  const [openEdit, setOpenedit] = useState(false);
+  const handleClickEdit = () => {
+      setOpenedit(true);
+  };
 
-const [customers, setCustomers] = useState([]);
-localStorage.setItem('debug', customers);
+  const [openAdd, setOpenadd] = useState(false);
+  const handleClickAdd = () => {
+      setOpenadd(true);
+  };
 
-const columns = [
-  
-  { sortable: false,
-    filterable: false,
-    editable: 'never',
-    render: row => {
-      return (<Addtraining linkki={row.links[1].href} customername={row.firstname + " " + row.lastname} saveTraining={saveTraining} />);
-    }},
-  { title: 'Firstame', field: 'firstname'},
-  { title: 'Lastname', field: 'lastname'},
-  { title: 'Streetaddress', field: 'streetaddress'},
-  { title: 'Postcode', field: 'postcode', type: 'numeric'},
-  { title: 'City', field: 'city'},
-  { title: 'Email', field: 'email'},
-  { title: 'Phone', field: 'phone'},
-  
-   
-]
+  const deleteCustomer = (link) => {
+      
+          fetch(link, {method: 'DELETE'})
+          .then(res => fetchData())
+          .catch(err => console.error(err))
+          handleClick();
+      
+      
+  };
 
-const columns2 = [
-  
-  
-  { title: 'Firstame', field: 'firstname'},
-  { title: 'Lastname', field: 'lastname'},
-  { title: 'Streetaddress', field: 'streetaddress'},
-  { title: 'Postcode', field: 'postcode', type: 'numeric'},
-  { title: 'City', field: 'city'},
-  { title: 'Email', field: 'email'},
-  { title: 'Phone', field: 'phone'},
-  
-   
-]
-useEffect(() => fetchData(), []);
+  const handleClose = (event, reason) => {
+      if(reason === 'clickaway') {
+          return;
+      }
 
-const fetchData = () => {
-    fetch('https://customerrest.herokuapp.com/api/customers')
-    .then(response => response.json())
-    .then(data => setCustomers(data.content))
-};
-
-const [open, setOpen] = useState(false);
-const handleClick = () => {
-    setOpen(true);
-};
-
-const [openEdit, setOpenedit] = useState(false);
-const handleClickEdit = () => {
-    setOpenedit(true);
-};
-
-const [openAdd, setOpenadd] = useState(false);
-const handleClickAdd = () => {
-    setOpenadd(true);
-};
-
-const deleteCustomer = (link) => {
-    
-        fetch(link, {method: 'DELETE'})
-        .then(res => fetchData())
-        .catch(err => console.error(err))
-        handleClick();
-    
-    
-};
-
-const handleClose = (event, reason) => {
+      setOpen(false);
+  };
+  const handleCloseEdit = (event, reason) => {
     if(reason === 'clickaway') {
         return;
     }
 
-    setOpen(false);
-};
-const handleCloseEdit = (event, reason) => {
-  if(reason === 'clickaway') {
-      return;
-  }
+    setOpenedit(false);
+  };
+  const handleCloseAdd = (event, reason) => {
+    if(reason === 'clickaway') {
+        return;
+    }
 
-  setOpenedit(false);
-};
-const handleCloseAdd = (event, reason) => {
-  if(reason === 'clickaway') {
-      return;
-  }
-
-  setOpenadd(false);
-};
-
-const saveCustomer = (customer) => {
-    fetch('https://customerrest.herokuapp.com/api/customers/', {
-        method: 'POST',
-        headers: {
-        'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(customer)
-
-    })
-    .then(res => fetchData())
-    .catch(err => console.error(err))
-
-    handleClickAdd();
-};
-
-const updateCustomer = (customer, link) => {
-    fetch(link, {
-        method: 'PUT',
-        headers: {
-        'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(customer)
-    }) 
-    .then(res => fetchData())
-    .catch(err => console.error(err))
-    handleClickEdit();
-    
-};
- /*const navigateTrainigs = () => {
-    browserHistory.push("/trainings");
-  };*/
-
-  const history = useHistory();
- 
-  const location = {
-    pathname: '/trainings',
-    state: { fromDashboard: true }
-  }; 
-   const location2 = {
-    pathname: '/',
-    state: { fromDashboard: true }
-   }
-   const location3 = {
-    pathname: '/calendar',
-    state: { fromDashboard: true }
-   }
-
-   function showCustomers () {
-     history.push(location2);
-   }
-
-  function showCalendar () {
-    history.push(location3);
-  }
-
-  function showTrainings () {
-    
-    history.push(location);
+    setOpenadd(false);
   };
 
-  const saveTraining = (training) => {
-    fetch('https://customerrest.herokuapp.com/api/trainings', {
-        method: 'POST',
-        headers: {
-        'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(training)
-    })
-    .then(res => fetchData())
-    .catch(err => console.error(err))
-};
+  const saveCustomer = (customer) => {
+      fetch('https://customerrest.herokuapp.com/api/customers/', {
+          method: 'POST',
+          headers: {
+          'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(customer)
 
+      })
+      .then(res => fetchData())
+      .catch(err => console.error(err))
+
+      handleClickAdd();
+  };
+
+  const updateCustomer = (customer, link) => {
+      fetch(link, {
+          method: 'PUT',
+          headers: {
+          'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(customer)
+      }) 
+      .then(res => fetchData())
+      .catch(err => console.error(err))
+      handleClickEdit();
+      
+  };
+ 
+
+    const history = useHistory();
   
+    const location = {
+      pathname: '/trainings',
+      state: { fromDashboard: true }
+    }; 
+    const location2 = {
+      pathname: '/',
+      state: { fromDashboard: true }
+    }
+    const location3 = {
+      pathname: '/calendar',
+      state: { fromDashboard: true }
+    }
+
+    function showCustomers () {
+      history.push(location2);
+    }
+
+    function showCalendar () {
+      history.push(location3);
+    }
+
+    function showTrainings () {
+      
+      history.push(location);
+    };
+
+    const saveTraining = (training) => {
+      fetch('https://customerrest.herokuapp.com/api/trainings', {
+          method: 'POST',
+          headers: {
+          'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(training)
+      })
+      .then(res => fetchData())
+      .catch(err => console.error(err))
+  };
+
+
     return (
     <div>
     
       <CssBaseline />
       <AppBar
         position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
+        className={clsx(classes.appBar)}
       >
         <Toolbar>
           <IconButton
@@ -328,9 +310,9 @@ const updateCustomer = (customer, link) => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Personal Trainer
+            Customers
           </Typography>
-        </Toolbar>
+        </Toolbar> 
       </AppBar>
       <Drawer
         className={classes.drawer}
@@ -381,20 +363,17 @@ const updateCustomer = (customer, link) => {
           [classes.contentShift]: open,
         })}
       >
-       
-       
+        <Addcustomer saveCustomer={saveCustomer}/>
       </main>
-    
-    
-    
-              
+            
     <MaterialTable
       icons={tableIcons}
-      title="Customers"
+      title={null}
       columns={columns}
       data={customers}
+      
+      
       editable={{
-       
           onRowUpdate: (newData, oldData) =>
           new Promise(resolve => {
             setTimeout(() => {
@@ -411,19 +390,10 @@ const updateCustomer = (customer, link) => {
               resolve();             
                 deleteCustomer(oldData.links[0].href);
             }, 600);
-          })
-          
-          
-          
-      }}
+          })          
+      }}      
     />
-    
-    
-    
-  
-
-       
-        
+           
         <Snackbar
                 anchorOrigin={{
                 vertical: 'bottom',
@@ -450,7 +420,7 @@ const updateCustomer = (customer, link) => {
                 horizontal: 'left',
                 }}
                 open={open}
-                autoHideDuration={4000}
+                autoHideDuration={2000}
                 onClose={handleClose}
                 message="The customer was deleted"
                 action={
@@ -470,7 +440,7 @@ const updateCustomer = (customer, link) => {
                 horizontal: 'left',
                 }}
                 open={openAdd}
-                autoHideDuration={4000}
+                autoHideDuration={2000}
                 onClose={handleCloseAdd}
                 message="The customer was added"
                 action={

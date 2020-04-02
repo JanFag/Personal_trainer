@@ -1,6 +1,5 @@
 import React from "react";
-
-import { Calendar, momentLocalizer, Views, Next } from "react-big-calendar";
+import { Calendar, momentLocalizer, Views} from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import clsx from 'clsx';
@@ -63,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerHeader: {
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'left',
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
@@ -98,10 +97,7 @@ export default function Calendarpage(){
   const handleDrawerOpen = () => {
     setOpendrawer(true);
   };
-  const [open, setOpen] = React.useState(false);
-  const handleClick = () => {
-  setOpen(true);
-  };
+  
 
   const handleDrawerClose = () => {
     setOpendrawer(false);
@@ -127,15 +123,8 @@ export default function Calendarpage(){
 
   moment.locale("fi-FI");
   const localizer = momentLocalizer(moment);
-  
-  const [uusidata, setUusidata] =React.useState([]);
-
-    
-  
-  const [items, setItems] = React.useState([]);
-  
+  const [items, setItems] = React.useState([]);  
   const item = [];
-
 
   React.useEffect(() => {
       fetch('https://customerrest.herokuapp.com/gettrainings',
@@ -147,17 +136,13 @@ export default function Calendarpage(){
       .then(data => {
         
         let events = data;
-        console.log(events);
+        
         
           for(let k = 0; k<events.length; k++){
-            console.log(events[k].activity);
-            console.log(items);
             item.push({
               title: events[k].activity + "/" + events[k].customer.firstname + " " + events[k].customer.lastname,
-              
-              start: getAlku(events[k].date), 
-              end: getnewDate(events[k].date, events[k].duration)
-              
+              start: moment.utc(events[k].date), 
+              end: getnewDate(events[k].date, events[k].duration)              
             })
           }
           setItems(item);
@@ -167,75 +152,50 @@ export default function Calendarpage(){
       })))
       
       
-      }, [])
+      });
 
 
 
-  function getAlku (date){    
-  const aika = moment.utc(date).toDate();
-  const paiva = aika.getDate();
-  const kk = + aika.getMonth();
-  const year = aika.getFullYear();
-  const hour = aika.getHours();
-  const min = aika.getMinutes();
-  const uusidate = new Date(year, kk, paiva, hour, min);
-  return uusidate;
-  }
 
 
   function getnewDate (date, duration) {
-  const aika = moment.utc(date).toDate();
-  const paiva = aika.getDate();
-  const kk = aika.getMonth();
-  const year = aika.getFullYear();
-  let hour = aika.getHours();
-  let min = aika.getMinutes();
+    
+  const aika = moment.utc(date);
+  const paiva = moment.utc(aika).date();
+  const kk = moment(aika).month();
+  const year = moment(aika).year();
+  let hour = moment(aika).hours();
+  let min = moment(aika).minutes();
   let endhour = '';
   let endmin = min + duration;
-  let endday = '';
-  let endkk ='';
+  
 
-  if(endmin > 60 && endmin <120){
+  if(endmin >= 60 && endmin <120){
     const apu  = endmin - 60;
     endmin = apu; 
     endhour = hour + 1;
     if(endhour === 24){
       endhour=0;
     }
-  } else if (endmin > 120){
-    endhour = hour + Math.round(endmin/60);
-    endmin = min-(60*Math.round(endmin/60));
-  } else {
-      
   }
-
-  if(duration < 1440){
-    endday = paiva;
-    endkk = kk;
+  if (endmin >= 120){
+    endhour = hour + (Math.floor(endmin/60));
+    endmin= endmin-(60*Math.floor(endmin/60));
+  
   } 
-  localStorage.setItem('year2', new Date(year, endkk, endday, endhour, endmin));
-  localStorage.setItem('year 3', year +','+ endkk +','+ endday + ',' + endhour +','+ endmin);
-  let enddate = new Date(year, endkk, endday, endhour, endmin);
-  localStorage.setItem('enddate', enddate);
-  localStorage.setItem('duration', duration);
+  
+  let enddate = new Date(year, kk, paiva, endhour, endmin);
   return enddate;
 
   }
 
-  
-  localStorage.setItem('items.lenghtuusi', item.length);
-  localStorage.setItem('items.lenght', items.size)
-    
-  
   
   return (
   <div style={{ height: 700 }}>
          <CssBaseline />
       <AppBar
         position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
+        className={clsx(classes.appBar)}
       >
         <Toolbar>
           <IconButton
@@ -243,7 +203,7 @@ export default function Calendarpage(){
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
-            className={clsx(classes.menuButton, open && classes.hide)}
+            className={clsx(classes.menuButton)}
           >
             <MenuIcon />
           </IconButton>
@@ -268,7 +228,6 @@ export default function Calendarpage(){
         </div>
         <Divider />
         <List>
-        
             <ListItem button                 
                 onClick={showCustomers}   
                  >
@@ -297,9 +256,7 @@ export default function Calendarpage(){
         <Divider />
       </Drawer>
       <main
-        className={clsx(classes.content, {
-          [classes.contentShift]: open,
-        })}
+        className={clsx(classes.content)}
       >
       </main>
     
@@ -309,13 +266,9 @@ export default function Calendarpage(){
       step={15}
       timeslots={8}
       showMultiDayTimes
-    
       min={new Date(2008, 0, 1, 8, 0)} // 8.00 AM
       max={new Date(2022, 0, 1, 17, 0)} // Max will be 6.00 PM!
-      
       defaultView={Views.MONTH}
-      
-      
       
     />
   </div>

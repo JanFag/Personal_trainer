@@ -21,9 +21,7 @@ import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
 import FaceIcon from '@material-ui/icons/Face';
 import IconButton from '@material-ui/core/IconButton';
-import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
-import moment from 'moment';
 import 'moment-timezone';
 import { useHistory } from "react-router-dom";
 
@@ -44,13 +42,9 @@ const useStyles = makeStyles(theme => ({
     appBarShift: {
       background: '#26a69a',
       width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
+      marginLeft: drawerWidth
       
-      transition: theme.transitions.create(['margin', 'width'], {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen,
-
-      }),
+     
     },
     menuButton: {
       marginRight: theme.spacing(2),
@@ -100,7 +94,7 @@ const useStyles = makeStyles(theme => ({
     },
   }));
 
-export default function Traininglist(){ {
+export default function Traininglist(){ 
     const classes = useStyles();
     const theme = useTheme();
     const [openDrawer, setOpendrawer] = React.useState(false);
@@ -114,23 +108,39 @@ export default function Traininglist(){ {
     };
 
 
-    
   
     const [trainings, setTrainings] = useState([]);
+    let trainings1 = [];
    
 
-    useEffect(() => fetchData(), []);
+    useEffect(() => fetchData());
+    
     
     const fetchData = () => {
         fetch('https://customerrest.herokuapp.com/gettrainings')
         .then(response => response.json())
-        .then(data => setTrainings(data))
+        .then(data => {
+          let events = data;
+          
+            for(let k = 0; k<events.length; k++){
+              
+              trainings1.push({
+                id: events[k].id,
+                activity: events[k].activity,
+                date: moment.utc(events[k].date).format('DD.MM.YYYY, h:mm:ss a'),
+                duration: events[k].duration ,
+                customer: events[k].customer.firstname + " " + events[k].customer.lastname           
+              })
+            }
+            setTrainings(trainings1);
         
+        })
     };
 
-
+ 
 
     const deleteTraining = (id) => {
+      console.log(id);
         if(window.confirm('Do you want to delete this training?')){
             fetch('https://customerrest.herokuapp.com/api/trainings/'+id, {method: 'DELETE'})
             .then(res => fetchData())
@@ -163,11 +173,8 @@ export default function Traininglist(){ {
         },
         {
             Header: 'Date',
-            accessor: 'data',
-            Cell: row => { 
-                return moment(row.value).format('DD.MM.YYYY, h:mm:ss a');
+            accessor: 'date'
             
-            }
         },
         {
             Header: 'Duration (min)',
@@ -175,17 +182,8 @@ export default function Traininglist(){ {
         },
         { 
             Header: 'Customer',
-            accessor: 'customer',
-            Cell: row => {
-              return (
-                <div>
-                  <span >{row.row.customer.firstname}</span>
-                  <span> </span>
-                  <span >{row.row.customer.lastname}</span>
-                </div>
-              )},
-             
-            
+            accessor: 'customer'
+              
         },
         {
             sortable: false,
@@ -211,7 +209,6 @@ export default function Traininglist(){ {
        history.push(location2);
      }
   
-    
   
     function showTrainings () {
       
@@ -229,15 +226,12 @@ export default function Traininglist(){ {
     }
 
     
-
     return (
     <div >
       <CssBaseline />
       <AppBar
         position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
+        className={clsx(classes.appBar)}
       >
         <Toolbar>
           <IconButton
@@ -334,4 +328,4 @@ export default function Traininglist(){ {
     )
 
 
-}}
+}
