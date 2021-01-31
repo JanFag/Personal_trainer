@@ -1,3 +1,6 @@
+This app is developed for personal trainers for managing clients and their trainings. The app gives opportunity to add and manage clients, trainings for those clients and see trainings in calendar. 
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
